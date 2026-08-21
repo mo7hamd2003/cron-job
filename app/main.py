@@ -8,12 +8,11 @@ import inngest
 import inngest.fast_api
 import datetime
 
-
-
 # Create an Inngest function
 @inngest_client.create_function(
     fn_id="say_hello",
     trigger=inngest.TriggerEvent(event="app/health.check"),
+    retries=2,
 )
 
 async def say_hello(ctx: inngest.Context) -> str:

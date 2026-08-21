@@ -1,6 +1,6 @@
 from fastapi import APIRouter, status
 from pathlib import Path
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
 from app.storage import save_report, load_report
 from app.inngest_client import inngest_client
 from fastapi import APIRouter, status, HTTPException
@@ -13,6 +13,13 @@ router = APIRouter()
 
 class ReportRequest(BaseModel):
     topic: str
+
+    # @field_validator("topic")
+    # @classmethod
+    # def title_not_empty(cls, v):
+    #     if not v.strip():
+    #         raise ValueError("topic is required")
+    #     return v.strip()
 
 class ReportResponse(BaseModel):
     id: str
@@ -28,6 +35,10 @@ class ReportStatusResponse(BaseModel):
 
 @router.post("/reports", status_code=status.HTTP_202_ACCEPTED, response_model=ReportResponse)
 async def clinet_reports(payload: ReportRequest) -> ReportResponse:
+
+    if not payload.topic.strip():
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="topic is required")
+    
     report_id = str(uuid.uuid4())
 
     record = { "id": report_id, "topic": payload.topic, "status": "pending" }
