@@ -1,0 +1,28 @@
+# Environment (contains secrets — use .env.example for the template)
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.uv/
+
+# Tests / coverage
+.pytest_cache/
+.coverage
+htmlcov/
+test_payloads/ 
+
+# Editor / OS
+.idea/
+.vscode/
+.DS_Store
+
+#cache
+cache/
+
+# inngest
+inngest.py
+
+# Powershell
+job.ps1
