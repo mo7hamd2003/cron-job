@@ -10,3 +10,6 @@ def save_report(record: dict) -> None:
 
 def load_report(report_id: str) -> dict:
     return json.loads((STORAGE_DIR / f"{report_id}.json").read_text())
+
+def load_all_reports() -> list[dict]:
+    return [json.loads(f.read_text()) for f in STORAGE_DIR.glob("*.json")]
