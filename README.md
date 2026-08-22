@@ -59,7 +59,7 @@ The Inngest Development Dashboard will be accessible at `http://127.0.0.1:8288`.
 
 Below is the screenshot of the registered functions in the local Inngest Developer Dashboard:
 
-![Inngest Dashboard](./Inngest Server.png)
+![Inngest Dashboard](Inngest_Server.png)
 
 ---
 
