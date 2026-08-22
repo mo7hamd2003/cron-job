@@ -1,11 +1,8 @@
-from fastapi import APIRouter, status
-from pathlib import Path
+from fastapi import APIRouter, status, HTTPException
 from pydantic import BaseModel, field_validator
 from app.storage import save_report, load_report
 from app.inngest_client import inngest_client
-from fastapi import APIRouter, status, HTTPException
 
-import json
 import inngest
 import uuid
 
@@ -35,7 +32,8 @@ class ReportStatusResponse(BaseModel):
 
 @router.post("/reports", status_code=status.HTTP_202_ACCEPTED, response_model=ReportResponse)
 async def clinet_reports(payload: ReportRequest) -> ReportResponse:
-
+    """Create a new report based on the provided topic."""
+    
     if not payload.topic.strip():
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="topic is required")
     
@@ -55,6 +53,8 @@ async def clinet_reports(payload: ReportRequest) -> ReportResponse:
 
 @router.get("/reports/{report_id}", response_model=ReportStatusResponse)
 async def get_report(report_id: str) -> ReportStatusResponse:
+    """Retrieve the status of a report by its ID."""
+    
     try:
         record = load_report(report_id)
     except FileNotFoundError:

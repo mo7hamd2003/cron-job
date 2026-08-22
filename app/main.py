@@ -1,24 +1,10 @@
 from fastapi import FastAPI
 from app.routes import health, client
-from app.functions import make_report
+from app.functions import make_report, say_hello, heartbeat
 from app.inngest_client import inngest_client
-from app.functions import heartbeat
 
 import inngest
 import inngest.fast_api
-import datetime
-
-# Create an Inngest function
-@inngest_client.create_function(
-    fn_id="say_hello",
-    trigger=inngest.TriggerEvent(event="app/health.check"),
-    retries=2,
-)
-
-async def say_hello(ctx: inngest.Context) -> str:
-    await ctx.step.sleep("zzz", datetime.timedelta(seconds=5))
-    ctx.logger.info(ctx.event)
-    return "Hello from background!"
 
 app = FastAPI()
 

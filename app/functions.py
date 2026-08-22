@@ -10,6 +10,8 @@ from app.storage import load_report, save_report, load_all_reports
     trigger=inngest.TriggerEvent(event="report/requested"),
 )
 async def make_report(ctx: inngest.Context) -> dict[str, str]:
+    """Make a report based on the event data."""
+
     await ctx.step.sleep("do-the-slow-work", datetime.timedelta(seconds=8))
 
     async def build_report() -> dict[str, str]:
@@ -35,6 +37,8 @@ async def make_report(ctx: inngest.Context) -> dict[str, str]:
     trigger=inngest.TriggerCron(cron="TZ=UTC * * * * *")
 )
 async def heartbeat(ctx: inngest.Context) -> dict[str, int]:
+    """Send a heartbeat event to the Inngest server."""
+
     pending = 0
     done = 0
     fail = 0
@@ -50,3 +54,15 @@ async def heartbeat(ctx: inngest.Context) -> dict[str, int]:
             done += 1
 
     return { "Pending": pending, "Done": done, "Fail": fail }
+
+@inngest_client.create_function(
+    fn_id="say_hello",
+    trigger=inngest.TriggerEvent(event="app/health.check"),
+    retries=2,
+)
+async def say_hello(ctx: inngest.Context) -> str:
+    """Send a greeting from the background."""
+
+    await ctx.step.sleep("zzz", datetime.timedelta(seconds=5))
+    ctx.logger.info(ctx.event)
+    return "Hello from background!"
